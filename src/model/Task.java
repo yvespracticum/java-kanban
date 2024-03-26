@@ -1,33 +1,37 @@
 package model;
 
-import service.TaskManager;
+import java.util.Objects;
 
 public class Task {
-    int id;
-    String title;
-    String description;
-    TaskStatus status;
+    private int id;
+    private String title;
+    private String description;
+    private TaskStatus status;
 
     public Task(String title, String description) {
-        TaskManager.globalTasksCounter++;
-        this.id = TaskManager.globalTasksCounter;
         this.title = title;
         this.description = description;
         this.status = TaskStatus.NEW;
     }
 
-    public Task(String title, String description, TaskStatus taskStatus) {
-        this.id = TaskManager.globalTasksCounter;
+    public Task(int id, String title, String description) {
+        this.id = id;
         this.title = title;
         this.description = description;
-        this.status = taskStatus;
     }
 
-    public int getID() {
+    public Task(int id, String title, String description, TaskStatus status) {
+        this.id = id;
+        this.title = title;
+        this.description = description;
+        this.status = status;
+    }
+
+    public int getId() {
         return id;
     }
 
-    public void rewriteID(int id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -38,6 +42,18 @@ public class Task {
     public void setStatus(TaskStatus status) {
         this.status = status;
     }
+
+    @Override public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Task task = (Task) o;
+        return id == task.id;
+    }
+
+    @Override public int hashCode() {
+        return Objects.hash(id);
+    }
+
 
     @Override public String toString() {
         return "{id=" + id + ", title='" + title + '\'' + ", description='" + description + '\'' + ", status=" +

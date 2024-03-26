@@ -3,46 +3,36 @@ package model;
 import java.util.ArrayList;
 
 public class Epic extends Task {
-    ArrayList<Subtask> mySubtasks;
+    ArrayList<Integer> mySubtasksIds;
 
     public Epic(String title, String description) {
         super(title, description);
-        mySubtasks = new ArrayList<>();
+        mySubtasksIds = new ArrayList<>();
     }
 
-    public ArrayList<Subtask> getMySubtasks() {
-        return mySubtasks;
+    public Epic(int id, String title, String description) {
+        super(id, title, description);
+        mySubtasksIds = new ArrayList<>();
+    }
+
+    public ArrayList<Integer> getMySubtasksIds() {
+        return mySubtasksIds;
     }
 
     public void addToMySubtasks(Subtask subtask) {
-        for (int i = 0; i < mySubtasks.size(); i++) {
-            if (mySubtasks.get(i).getID() == subtask.getID()) {
-                mySubtasks.set(i, subtask);
-                return;
-            }
+        int index = mySubtasksIds.indexOf(subtask.getId());
+        if (index != -1) {
+            mySubtasksIds.set(index, subtask.getId());
+        } else {
+            mySubtasksIds.add(subtask.getId());
         }
-        mySubtasks.add(subtask);
     }
 
-    public void clearMySubtasksList() {
-        mySubtasks.clear();
+    public void deleteSubtaskFromMyList(int id) {
+        mySubtasksIds.remove(id);
     }
 
-    public boolean isAllMySubtasksDone() {
-        for (Subtask subtask : mySubtasks) {
-            if (subtask.getStatus() != TaskStatus.DONE) {
-                return false;
-            }
-        }
-        return true;
-    }
-
-    public boolean isAnyMySubtaskInProgress() {
-        for (Subtask subtask : mySubtasks) {
-            if (subtask.getStatus() == TaskStatus.IN_PROGRESS) {
-                return true;
-            }
-        }
-        return false;
+    public void clearMySubtasksIdsList() {
+        mySubtasksIds.clear();
     }
 }

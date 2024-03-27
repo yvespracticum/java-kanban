@@ -14,12 +14,6 @@ public class Task {
         this.status = TaskStatus.NEW;
     }
 
-//    public Task(int id, String title, String description) {
-//        this.id = id;
-//        this.title = title;
-//        this.description = description;
-//    }
-
     public Task(int id, String title, String description, TaskStatus status) {
         this.id = id;
         this.title = title;

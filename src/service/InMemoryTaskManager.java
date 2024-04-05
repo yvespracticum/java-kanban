@@ -7,17 +7,26 @@ import model.TaskStatus;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class InMemoryTaskManager implements TaskManager {
+
+    private int globalTasksCounter = 0;
+    private final HistoryManager historyManager;
     private final HashMap<Integer, Task> tasks;
     private final HashMap<Integer, Epic> epics;
     private final HashMap<Integer, Subtask> subtasks;
-    private int globalTasksCounter = 0;
 
     public InMemoryTaskManager() {
-        tasks = new HashMap<>();
-        epics = new HashMap<>();
-        subtasks = new HashMap<>();
+        this.historyManager = Managers.getDefaultHistory();
+        this.tasks = new HashMap<>();
+        this.epics = new HashMap<>();
+        this.subtasks = new HashMap<>();
+    }
+
+    //History
+    public List<Task> getHistory() {
+        return historyManager.getHistory();
     }
 
     // Tasks management
@@ -29,13 +38,15 @@ public class InMemoryTaskManager implements TaskManager {
         tasks.clear();
     }
 
-    @Override public Task createTask(Task task) {
+    @Override public Task addTask(Task task) {
         task.setId(++globalTasksCounter);
         tasks.put(task.getId(), task);
         return task;
     }
 
     @Override public Task getTaskById(int taskId) {
+        historyManager.add(tasks.get(taskId));
+//        Managers.getDefaultHistory().add(tasks.get(taskId));
         return tasks.get(taskId);
     }
 
@@ -58,13 +69,15 @@ public class InMemoryTaskManager implements TaskManager {
         subtasks.clear();
     }
 
-    @Override public Epic createEpic(Epic epic) {
+    @Override public Epic addEpic(Epic epic) {
         epic.setId(++globalTasksCounter);
         epics.put(epic.getId(), epic);
         return epic;
     }
 
     @Override public Epic getEpicById(int epicId) {
+        historyManager.add(epics.get(epicId));
+//        Managers.getDefaultHistory().add(tasks.get(epicId));
         return epics.get(epicId);
     }
 
@@ -123,16 +136,17 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    @Override public Subtask createSubtask(Subtask subtask) {
+    @Override public Subtask addSubtask(Subtask subtask) {
         subtask.setId(++globalTasksCounter);
         subtasks.put(subtask.getId(), subtask);
         epics.get(subtask.getMyEpicId()).addToMySubtasks(subtask.getId());
         changeEpicStatusDueToSubtaskStatus(subtask.getMyEpicId());
-
         return subtask;
     }
 
     @Override public Subtask getSubtaskById(int subtaskId) {
+        historyManager.add(subtasks.get(subtaskId));
+//        Managers.getDefaultHistory().add(tasks.get(subtaskId));
         return subtasks.get(subtaskId);
     }
 

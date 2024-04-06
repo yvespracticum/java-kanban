@@ -36,8 +36,6 @@ public interface TaskManager {
 
     List<Subtask> getEpicSubtasks(int epicId);
 
-    void changeEpicStatusDueToSubtaskStatus(int epicId);
-
     // Subtasks management
     List<Subtask> getAllSubtasks();
 

@@ -9,21 +9,21 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class EpicTest {
-    
+
     private Epic epic;
-    
+
     @BeforeEach
     void setUp() {
         epic = new Epic("Epic Title", "Epic Description");
     }
-    
+
     @Test
     void epicsAreEqualsIfTheirIdsAreEquals() {
         Epic epic1 = new Epic(1, "Epic 1 Title", "Epic 2 Description");
         Epic epic2 = new Epic(1, "Epic 2 Title", "Epic 2 Description");
         assertEquals(epic1, epic2);
     }
-    
+
     @Test
     void testEpicConstructor() {
         assertEquals("Epic Title", epic.getTitle());
@@ -31,7 +31,7 @@ class EpicTest {
         assertEquals(TaskStatus.NEW, epic.getStatus());
         assertTrue(epic.getMySubtasksIds().isEmpty());
     }
-    
+
     @Test
     void testEpicConstructorWithId() {
         Epic epic2 = new Epic(1, "Epic Title 2", "Epic Description 2");
@@ -41,7 +41,7 @@ class EpicTest {
         assertEquals(TaskStatus.NEW, epic2.getStatus());
         assertTrue(epic2.getMySubtasksIds().isEmpty());
     }
-    
+
     @Test
     void testAddToMySubtasks() {
         epic.addToMySubtasks(1);
@@ -51,7 +51,7 @@ class EpicTest {
         expected.add(2);
         assertEquals(expected, epic.getMySubtasksIds());
     }
-    
+
     @Test
     void testDeleteSubtaskFromMyList() {
         epic.addToMySubtasks(1);
@@ -61,7 +61,7 @@ class EpicTest {
         expected.add(2);
         assertEquals(expected, epic.getMySubtasksIds());
     }
-    
+
     @Test
     void testClearMySubtasksIdsList() {
         epic.addToMySubtasks(1);

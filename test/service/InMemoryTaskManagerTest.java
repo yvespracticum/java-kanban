@@ -57,7 +57,7 @@ class InMemoryTaskManagerTest {
     @Test
     void testDeleteTaskById() {
         taskManager.deleteTaskById(task.getId());
-        assertNull(taskManager.getTaskById(task.getId()));
+        assertFalse(taskManager.getAllTasks().contains(task));
     }
 
     @Test
@@ -80,7 +80,7 @@ class InMemoryTaskManagerTest {
     @Test
     void testDeleteEpicById() {
         taskManager.deleteEpicById(epic.getId());
-        assertNull(taskManager.getEpicById(epic.getId()));
+        assertFalse(taskManager.getAllEpics().contains(epic));
     }
 
     @Test
@@ -105,7 +105,7 @@ class InMemoryTaskManagerTest {
     @Test
     void testDeleteSubtaskById() {
         taskManager.deleteSubtaskById(subtask.getId());
-        assertNull(taskManager.getSubtaskById(subtask.getId()));
+        assertFalse(taskManager.getAllSubtasks().contains(subtask));
         assertFalse(taskManager.getEpicById(epic.getId()).getMySubtasksIds().contains(subtask.getId()));
     }
 

@@ -1,72 +1,75 @@
 package service;
 
 import model.Task;
+import model.TaskStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 class InMemoryHistoryManagerTest {
 
     private HistoryManager historyManager;
+    private Task task;
 
     @BeforeEach
     void setUp() {
         historyManager = Managers.getDefaultHistory();
+        task = new Task(1, "Task", "Description", TaskStatus.NEW);
     }
 
     @Test
     void testGetHistory() {
-        Task task = new Task("Task", "Description");
+        historyManager.add(task);
         List<Task> expectedHistory = new ArrayList<>();
         expectedHistory.add(task);
-        historyManager.add(task);
-        assertNotNull(historyManager.getHistory());
-        assertFalse(historyManager.getHistory().isEmpty());
-        assertEquals(1, historyManager.getHistory().size());
         assertEquals(expectedHistory, historyManager.getHistory());
-    }
-
-    @Test
-    void testHistoryManagerDoNotChangeTasks() {
-        Task task1 = new Task("Task 1", "Description 1");
-        Task task2 = new Task("Task 2", "Description 2");
-        historyManager.add(task1);
-        historyManager.add(task2);
-        List<Task> history = historyManager.getHistory();
-        assertEquals(2, history.size());
-        assertSame(task1, history.get(0));
-        assertSame(task2, history.get(1));
     }
 
     @Test
     void testAdd() {
-        Task task1 = new Task("Task 1", "Description 1");
-        Task task2 = new Task("Task 2", "Description 2");
-        historyManager.add(task1);
-        historyManager.add(task2);
+        historyManager.add(task);
+        assertTrue(historyManager.getHistory().contains(task));
+    }
+
+    @Test
+    void testAddExistingTask() {
+        historyManager.add(task);
+        historyManager.add(task);
         List<Task> expectedHistory = new ArrayList<>();
-        expectedHistory.add(task1);
-        expectedHistory.add(task2);
+        expectedHistory.add(task);
         assertEquals(expectedHistory, historyManager.getHistory());
     }
 
     @Test
-    void testAddWithMaxHistorySize() {
-        List<Task> tasks = new ArrayList<>();
-        for (int i = 1; i <= 11; i++) {
-            tasks.add(new Task("Task " + i, "Description " + i));
-        }
-        for (Task task : tasks) {
-            historyManager.add(task);
-        }
-        List<Task> expectedHistory = new ArrayList<>();
-        for (int i = 1; i <= 10; i++) {
-            expectedHistory.add(tasks.get(i));
-        }
+    void testRemove() {
+        Task task2 = new Task(2, "Task", "Description", TaskStatus.NEW);
+        Task task3 = new Task(3, "Task", "Description", TaskStatus.NEW);
+        Task task4 = new Task(4, "Task", "Description", TaskStatus.NEW);
+
+        historyManager.add(task);
+        historyManager.add(task2);
+        historyManager.add(task3);
+        historyManager.add(task4);
+
+        // Remove from the middle of the history linked list
+        historyManager.remove(task2.getId());
+        List<Task> expectedHistory = new ArrayList<>(Arrays.asList(task, task3, task4));
+        assertEquals(expectedHistory, historyManager.getHistory());
+
+        // Remove from the beginning of the history linked list
+        historyManager.remove(task.getId());
+        expectedHistory.remove(task);
+        assertEquals(expectedHistory, historyManager.getHistory());
+
+        // Remove from the end of the history linked list
+        historyManager.remove(task4.getId());
+        expectedHistory.remove(task4);
         assertEquals(expectedHistory, historyManager.getHistory());
     }
 }
